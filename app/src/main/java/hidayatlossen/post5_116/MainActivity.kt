@@ -24,8 +24,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: FeedAdapter
     private lateinit var horizontalAdapter: FeedHorizontalAdapter
 
-    // Variabel untuk menyimpan gambar yang dipilih (dari dummy)
-    private var selectedFeedImage: String? = null
+    // Variabel untuk menyimpan URI gambar yang dipilih
+    private var selectedImageUri: Uri? = null
 
     // Flag untuk menandai apakah data dummy sudah dimasukkan
     private var isDummyDataInserted = false
@@ -35,10 +35,10 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
-            // Meskipun user memilih gambar dari file manager,
-            // kita akan menggunakan gambar dummy yang sudah ada
-            selectedFeedImage = getRandomFeedImage()
-            showToast("Gambar berhasil dipilih")
+            result.data?.data?.let { uri ->
+                selectedImageUri = uri
+                showToast("Gambar berhasil dipilih")
+            }
         }
     }
 
@@ -107,6 +107,9 @@ class MainActivity : AppCompatActivity() {
     private fun clearDatabaseOnStart() {
         appExecutors.diskIO.execute {
             feedDao.deleteAllFeeds()
+//            runOnUiThread {
+//                showToast("Database dibersihkan")
+//            }
             isDummyDataInserted = false // Reset flag
         }
     }
@@ -134,6 +137,11 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 isDummyDataInserted = true // Set flag menjadi true
+
+                // Tampilkan toast di main thread
+//                runOnUiThread {
+//                    showToast("Data dummy berhasil ditambahkan")
+//                }
             }
         }
     }
@@ -181,7 +189,7 @@ class MainActivity : AppCompatActivity() {
             .create()
 
         // Reset selected image setiap kali dialog dibuka
-        selectedFeedImage = null
+        selectedImageUri = null
 
         // Setup untuk memilih gambar dari file manager dengan bottom sheet
         dialogBinding.llAddImage.setOnClickListener {
@@ -198,14 +206,19 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Pilih gambar profile secara random dari dummy data
+            // Pilih gambar secara random dari dummy data
             val randomProfileIndex = (0 until dummyProfileImages.size).random()
+            val randomFeedIndex = (0 until dummyFeedImages.size).random()
 
             val gambarProfile = dummyProfileImages[randomProfileIndex]
 
-            // Jika user memilih gambar, gunakan gambar yang dipilih
-            // Jika tidak, gunakan gambar dummy random
-            val gambarFeed = selectedFeedImage ?: getRandomFeedImage()
+            // Jika user memilih gambar, gunakan nama file dari URI
+            // Jika tidak, gunakan gambar dummy
+            val gambarFeed = if (selectedImageUri != null) {
+                getFileNameFromUri(selectedImageUri)
+            } else {
+                dummyFeedImages[randomFeedIndex]
+            }
 
             val newFeed = Feed(
                 nama = nama,
@@ -235,50 +248,22 @@ class MainActivity : AppCompatActivity() {
 
         // Option 1: Pilih dari File Manager (Universal)
         bottomSheetBinding.optionFileManager.setOnClickListener {
-            // Meskipun diklik file manager, kita akan pilih gambar dummy
-            selectedFeedImage = getRandomFeedImage()
-            showToast("Gambar dipilih: ${selectedFeedImage?.replace("player", "Pemain ")}")
+            openFilePicker()
             bottomSheetDialog.dismiss()
         }
 
         // Option 2: Pilih dari Gallery
         bottomSheetBinding.optionGallery.setOnClickListener {
-            // Meskipun diklik gallery, kita akan pilih gambar dummy
-            selectedFeedImage = getRandomFeedImage()
-            showToast("Gambar dipilih: ${selectedFeedImage?.replace("player", "Pemain ")}")
+            openGallery()
             bottomSheetDialog.dismiss()
         }
 
-        // Option 3: Pilih Gambar Manual (Pilihan spesifik)
-        bottomSheetBinding.optionManual.setOnClickListener {
-            showManualImagePicker()
-            bottomSheetDialog.dismiss()
-        }
-
-        // Option 4: Batalkan
+        // Option 3: Batalkan
         bottomSheetBinding.optionCancel.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
 
         bottomSheetDialog.show()
-    }
-
-    private fun showManualImagePicker() {
-        val imageOptions = arrayOf("Pemain 1", "Pemain 2", "Pemain 3", "Pemain 4", "Pemain 5", "Batal")
-
-        AlertDialog.Builder(this)
-            .setTitle("Pilih Gambar")
-            .setItems(imageOptions) { dialog, which ->
-                when (which) {
-                    0 -> { selectedFeedImage = "player1"; showToast("Gambar dipilih: Pemain 1") }
-                    1 -> { selectedFeedImage = "player2"; showToast("Gambar dipilih: Pemain 2") }
-                    2 -> { selectedFeedImage = "player3"; showToast("Gambar dipilih: Pemain 3") }
-                    3 -> { selectedFeedImage = "player4"; showToast("Gambar dipilih: Pemain 4") }
-                    4 -> { selectedFeedImage = "player5"; showToast("Gambar dipilih: Pemain 5") }
-                    5 -> dialog.dismiss()
-                }
-            }
-            .show()
     }
 
     private fun openFilePicker() {
@@ -294,9 +279,6 @@ class MainActivity : AppCompatActivity() {
             pickImageLauncher.launch(chooser)
         } catch (e: Exception) {
             showToast("Tidak ada aplikasi file manager yang tersedia")
-            // Fallback: pilih gambar dummy
-            selectedFeedImage = getRandomFeedImage()
-            showToast("Gambar dipilih: ${selectedFeedImage?.replace("player", "Pemain ")}")
         }
     }
 
@@ -306,14 +288,12 @@ class MainActivity : AppCompatActivity() {
             pickImageLauncher.launch(intent)
         } catch (e: Exception) {
             showToast("Tidak ada aplikasi gallery yang tersedia")
-            // Fallback: pilih gambar dummy
-            selectedFeedImage = getRandomFeedImage()
-            showToast("Gambar dipilih: ${selectedFeedImage?.replace("player", "Pemain ")}")
         }
     }
 
-    private fun getRandomFeedImage(): String {
-        return dummyFeedImages.random()
+    private fun getFileNameFromUri(uri: Uri?): String {
+        // Selalu gunakan nama berdasarkan timestamp untuk menghindari error
+        return "image_${System.currentTimeMillis()}.jpg"
     }
 
     private fun showEditFeedDialog(feed: Feed) {
@@ -323,7 +303,7 @@ class MainActivity : AppCompatActivity() {
             .create()
 
         // Reset selected image
-        selectedFeedImage = null
+        selectedImageUri = null
 
         // Menggunakan binding untuk set text
         dialogBinding.tvUsername.setText(feed.nama)
@@ -348,7 +328,11 @@ class MainActivity : AppCompatActivity() {
 
             // Jika user memilih gambar baru, gunakan yang baru
             // Jika tidak, pertahankan gambar lama
-            val gambarFeed = selectedFeedImage ?: feed.gambarFeed
+            val gambarFeed = if (selectedImageUri != null) {
+                getFileNameFromUri(selectedImageUri)
+            } else {
+                feed.gambarFeed
+            }
 
             val updatedFeed = feed.copy(
                 nama = nama,
