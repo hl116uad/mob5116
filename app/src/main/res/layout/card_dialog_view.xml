@@ -1,6 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="10dp"
+    app:cardCornerRadius="4dp"
+    android:layout_margin="16dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvAddPost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tambah Post Baru"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="16dp"
+            />
+
+        <TextView
+            android:id="@+id/tvCreatePost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Buat Post Baru"
+            android:textColor="@color/blue"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            />
+
+        <EditText
+            android:id="@+id/tvUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username"
+            android:inputType="text"
+            android:background="@drawable/draw_plain_text"
+            android:padding="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/tvCaption"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:hint="Tulis Caption..."
+            android:inputType="text"
+            android:background="@drawable/draw_plain_text"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp"
+            />
+
+        <LinearLayout
+            android:id="@+id/llAddImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/draw_plain_text"
+            android:layout_marginBottom="8dp">
+
+            <ImageView
+                android:id="@+id/iconCamera"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/camera_sharp_svgrepo_com"
+                android:contentDescription="Icon Kamera"
+                app:tint="@color/blue"/>
+
+
+            <TextView
+                android:id="@+id/textAddImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tambahkan Gambar"
+                android:textColor="@color/blue"
+                android:layout_marginStart="8dp"
+                android:textSize="16dp"
+                />
+
+        </LinearLayout>
+
+        <!-- ImageView untuk preview gambar -->
+        <ImageView
+            android:id="@+id/ivNewImage"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/player4"
+            android:contentDescription="Preview Image" />
+
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Simpan"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/blue"/>
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>
