@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         "Fadila Lossen",
         "Arvin Setiawan",
         "Wayu Kurnia",
-        "Bambang Pamungkas"
+        "Bambang"
     )
 
     private val dummyCaptions = listOf(
