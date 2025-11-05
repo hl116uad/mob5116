@@ -7,7 +7,6 @@
     android:padding="16dp"
     android:background="@drawable/bottom_sheet_background">
 
-    <!-- Title -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +17,6 @@
         android:layout_marginBottom="16dp"
         android:textColor="@color/black" />
 
-    <!-- Option 1: File Manager -->
     <LinearLayout
         android:id="@+id/optionFileManager"
         android:layout_width="match_parent"
@@ -47,7 +45,6 @@
 
     </LinearLayout>
 
-    <!-- Option 2: Gallery -->
     <LinearLayout
         android:id="@+id/optionGallery"
         android:layout_width="match_parent"
@@ -76,7 +73,6 @@
 
     </LinearLayout>
 
-    <!-- Option 3: Pilih Manual -->
     <LinearLayout
         android:id="@+id/optionManual"
         android:layout_width="match_parent"
@@ -105,14 +101,12 @@
 
     </LinearLayout>
 
-    <!-- Divider -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#E0E0E0"
         android:layout_marginVertical="8dp" />
 
-    <!-- Option 4: Cancel -->
     <LinearLayout
         android:id="@+id/optionCancel"
         android:layout_width="match_parent"
@@ -133,5 +127,4 @@
             android:textColor="#FF0000" />
 
     </LinearLayout>
-
 </LinearLayout>

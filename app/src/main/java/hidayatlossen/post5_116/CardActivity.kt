@@ -23,7 +23,6 @@ class CardActivity : AppCompatActivity() {
 
                 selectedFeed?.let { feed ->
                     runOnUiThread {
-                        // Implementasi binding data ke view jika diperlukan
                         // binding.tvNama.text = feed.nama
                         // binding.tvCaption.text = feed.caption
                     }

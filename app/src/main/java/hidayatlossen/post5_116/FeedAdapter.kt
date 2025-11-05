@@ -30,7 +30,6 @@ class FeedAdapter(
     override fun getItemCount(): Int = feedList.size
 
     fun updateData(newList: List<Feed>) {
-        // Data sudah di-reverse di MainActivity, jadi tidak perlu reverse lagi di sini
         feedList = newList
         notifyDataSetChanged()
     }
@@ -49,19 +48,16 @@ class FeedAdapter(
                 textView2.text = feed.nama
                 textView.text = feed.caption
 
-                // Set gambar profile
                 val profileResId = getResourceId(feed.gambarProfile, "drawable")
                 if (profileResId != 0) {
                     imageView.setImageResource(profileResId)
                 }
 
-                // Set gambar feed utama
                 val feedResId = getResourceId(feed.gambarFeed, "drawable")
                 if (feedResId != 0) {
                     imageView2.setImageResource(feedResId)
                 }
 
-                // Setup tombol hapus/edit dengan PopupMenu
                 btnHapusEdit.setOnClickListener { view ->
                     showPopupMenu(view, feed)
                 }

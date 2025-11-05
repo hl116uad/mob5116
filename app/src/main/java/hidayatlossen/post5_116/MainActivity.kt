@@ -24,13 +24,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: FeedAdapter
     private lateinit var horizontalAdapter: FeedHorizontalAdapter
 
-    // Variabel untuk menyimpan URI gambar yang dipilih
     private var selectedImageUri: Uri? = null
 
-    // Flag untuk menandai apakah data dummy sudah dimasukkan
     private var isDummyDataInserted = false
 
-    // Activity result launcher untuk memilih gambar dari file manager
     private val pickImageLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -42,7 +39,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Data dummy untuk nama dan caption (5 data saja)
     private val dummyNames = listOf(
         "Hidayat lossen",
         "Fadila Lossen",
@@ -59,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         "Alam selalu memberikan pemandangan terbaik 🌿"
     )
 
-    // Gambar profile (avatar) - dari gambar1.png sampai gambar5.png
     private val dummyProfileImages = listOf(
         "gambar1",
         "gambar2",
@@ -68,7 +63,6 @@ class MainActivity : AppCompatActivity() {
         "gambar5"
     )
 
-    // Gambar feed utama - dari player1.jpg sampai player5.jpg
     private val dummyFeedImages = listOf(
         "player1",
         "player2",
@@ -86,12 +80,11 @@ class MainActivity : AppCompatActivity() {
         dbFeed = DatabaseFeed.getDatabase(applicationContext)
         feedDao = dbFeed.feedDao()
 
-        // Bersihkan database setiap aplikasi dibuka
         clearDatabaseOnStart()
 
         setupRecyclerViews()
         setupObservers()
-        insertDummyData() // Memasukkan data dummy
+        insertDummyData()
 
         binding.mtrlBtnAdd.setOnClickListener {
             showAddFeedDialog()
@@ -100,16 +93,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        // Optional: Bersihkan database ketika aplikasi ditutup
-        // clearDatabaseOnDestroy()
+         clearDatabaseOnDestroy()
     }
 
     private fun clearDatabaseOnStart() {
         appExecutors.diskIO.execute {
             feedDao.deleteAllFeeds()
-//            runOnUiThread {
-//                showToast("Database dibersihkan")
-//            }
             isDummyDataInserted = false // Reset flag
         }
     }
@@ -122,7 +111,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun insertDummyData() {
         appExecutors.diskIO.execute {
-            // Cek apakah sudah ada data dan flag
             val existingFeeds = feedDao.getAllFeed().value
             if (existingFeeds.isNullOrEmpty() && !isDummyDataInserted) {
                 // Insert 5 data dummy saja
@@ -136,21 +124,14 @@ class MainActivity : AppCompatActivity() {
                     feedDao.insert(newFeed)
                 }
 
-                isDummyDataInserted = true // Set flag menjadi true
-
-                // Tampilkan toast di main thread
-//                runOnUiThread {
-//                    showToast("Data dummy berhasil ditambahkan")
-//                }
+                isDummyDataInserted = true
             }
         }
     }
 
     private fun setupRecyclerViews() {
-        // Horizontal RecyclerView
         binding.rvRoomDbHorizontal.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        // Vertical RecyclerView
         binding.rvRoomDbVertikal.layoutManager = LinearLayoutManager(this)
 
         adapter = FeedAdapter(emptyList(), object : FeedAdapter.FeedClickListener {
@@ -172,12 +153,10 @@ class MainActivity : AppCompatActivity() {
     private fun setupObservers() {
         val feedList = feedDao.getAllFeed()
         feedList.observe(this, Observer { feeds ->
-            // Untuk vertical RecyclerView: data terbaru di atas (reversed)
             val verticalData = feeds.reversed()
             adapter.updateData(verticalData)
 
-            // Untuk horizontal RecyclerView: tampilkan maksimal 5 data terbaru
-            val horizontalData = feeds.takeLast(5) // Ambil 5 data terakhir
+            val horizontalData = feeds.takeLast(5)
             horizontalAdapter.updateData(horizontalData)
         })
     }
@@ -187,11 +166,8 @@ class MainActivity : AppCompatActivity() {
         val dialog = AlertDialog.Builder(this)
             .setView(dialogBinding.root)
             .create()
-
-        // Reset selected image setiap kali dialog dibuka
         selectedImageUri = null
 
-        // Setup untuk memilih gambar dari file manager dengan bottom sheet
         dialogBinding.llAddImage.setOnClickListener {
             showImagePickerBottomSheet()
         }
@@ -200,20 +176,16 @@ class MainActivity : AppCompatActivity() {
             val nama = dialogBinding.tvUsername.text.toString().trim()
             val caption = dialogBinding.tvCaption.text.toString().trim()
 
-            // Validasi input kosong
             if (nama.isEmpty() || caption.isEmpty()) {
                 showToast("Data tidak boleh kosong")
                 return@setOnClickListener
             }
 
-            // Pilih gambar secara random dari dummy data
             val randomProfileIndex = (0 until dummyProfileImages.size).random()
             val randomFeedIndex = (0 until dummyFeedImages.size).random()
 
             val gambarProfile = dummyProfileImages[randomProfileIndex]
 
-            // Jika user memilih gambar, gunakan nama file dari URI
-            // Jika tidak, gunakan gambar dummy
             val gambarFeed = if (selectedImageUri != null) {
                 getFileNameFromUri(selectedImageUri)
             } else {
@@ -230,7 +202,6 @@ class MainActivity : AppCompatActivity() {
             appExecutors.diskIO.execute {
                 feedDao.insert(newFeed)
 
-                // Tampilkan toast di main thread
                 runOnUiThread {
                     showToast("Data berhasil disimpan")
                 }
@@ -246,19 +217,16 @@ class MainActivity : AppCompatActivity() {
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(bottomSheetBinding.root)
 
-        // Option 1: Pilih dari File Manager (Universal)
         bottomSheetBinding.optionFileManager.setOnClickListener {
             openFilePicker()
             bottomSheetDialog.dismiss()
         }
 
-        // Option 2: Pilih dari Gallery
         bottomSheetBinding.optionGallery.setOnClickListener {
             openGallery()
             bottomSheetDialog.dismiss()
         }
 
-        // Option 3: Batalkan
         bottomSheetBinding.optionCancel.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
@@ -272,7 +240,6 @@ class MainActivity : AppCompatActivity() {
             addCategory(Intent.CATEGORY_OPENABLE)
         }
 
-        // Buat chooser untuk memilih aplikasi file manager
         val chooser = Intent.createChooser(intent, "Pilih Gambar dari File Manager")
 
         try {
@@ -292,7 +259,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getFileNameFromUri(uri: Uri?): String {
-        // Selalu gunakan nama berdasarkan timestamp untuk menghindari error
         return "image_${System.currentTimeMillis()}.jpg"
     }
 
@@ -302,16 +268,15 @@ class MainActivity : AppCompatActivity() {
             .setView(dialogBinding.root)
             .create()
 
-        // Reset selected image
         selectedImageUri = null
 
-        // Menggunakan binding untuk set text
+
         dialogBinding.tvUsername.setText(feed.nama)
         dialogBinding.tvCaption.setText(feed.caption)
         dialogBinding.tvAddPost.text = "Edit Post"
         dialogBinding.tvCreatePost.text = "Edit Post"
 
-        // Tambahkan fungsi pick image juga di edit dialog
+
         dialogBinding.llAddImage.setOnClickListener {
             showImagePickerBottomSheet()
         }
@@ -319,15 +284,11 @@ class MainActivity : AppCompatActivity() {
         dialogBinding.buttonSave.setOnClickListener {
             val nama = dialogBinding.tvUsername.text.toString().trim()
             val caption = dialogBinding.tvCaption.text.toString().trim()
-
-            // Validasi input kosong
             if (nama.isEmpty() || caption.isEmpty()) {
                 showToast("Data tidak boleh kosong")
                 return@setOnClickListener
             }
 
-            // Jika user memilih gambar baru, gunakan yang baru
-            // Jika tidak, pertahankan gambar lama
             val gambarFeed = if (selectedImageUri != null) {
                 getFileNameFromUri(selectedImageUri)
             } else {
@@ -342,8 +303,6 @@ class MainActivity : AppCompatActivity() {
 
             appExecutors.diskIO.execute {
                 feedDao.update(updatedFeed)
-
-                // Tampilkan toast di main thread
                 runOnUiThread {
                     showToast("Data berhasil diupdate")
                 }
@@ -369,7 +328,6 @@ class MainActivity : AppCompatActivity() {
         appExecutors.diskIO.execute {
             feedDao.delete(feed)
 
-            // Tampilkan toast di main thread
             runOnUiThread {
                 showToast("Data berhasil dihapus")
             }

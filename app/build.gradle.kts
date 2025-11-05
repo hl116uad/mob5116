@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-//    ini yang di tambahkan
     id("org.jetbrains.kotlin.kapt")
     id("org.jetbrains.kotlin.plugin.parcelize")
 }
@@ -37,7 +36,6 @@ android {
         jvmTarget = "11"
     }
 
-//    ini yang di tambahkan
     buildFeatures {
         viewBinding = true
     }
@@ -53,7 +51,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-//    ini yang di tambahkan
     implementation ("androidx.room:room-runtime:2.5.2")
     kapt("androidx.room:room-compiler:2.5.2")
     implementation("de.hdodenhof:circleimageview:3.1.0")

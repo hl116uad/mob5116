@@ -13,11 +13,11 @@ data class Feed(
     val nama: String,
 
     @ColumnInfo(name = "gambar_feed")
-    val gambarFeed: String, // bisa simpan path lokal atau URL
+    val gambarFeed: String,
 
     @ColumnInfo(name = "caption")
     val caption: String,
 
     @ColumnInfo(name = "gambar_profile")
-    val gambarProfile: String // juga path atau URL
+    val gambarProfile: String
 )

@@ -90,7 +90,6 @@
 
         </LinearLayout>
 
-        <!-- ImageView untuk preview gambar -->
         <ImageView
             android:id="@+id/ivNewImage"
             android:layout_width="match_parent"

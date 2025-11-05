@@ -21,8 +21,6 @@ interface FeedDao {
 
     @Query("SELECT * FROM feed ORDER BY id DESC")
     fun getAllFeed(): LiveData<List<Feed>>
-
-    // Tambahkan fungsi untuk menghapus semua data
     @Query("DELETE FROM feed")
     fun deleteAllFeeds()
     @Query("SELECT * FROM feed WHERE id = :feedId")
