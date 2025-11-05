@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import hidayatlossen.post5_116.databinding.AvatarItemBinding
 
 class FeedHorizontalAdapter(
-    private val feedList: List<Feed>
+    private var feedList: List<Feed>
 ) : RecyclerView.Adapter<FeedHorizontalAdapter.FeedHorizontalViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedHorizontalViewHolder {
@@ -20,6 +20,11 @@ class FeedHorizontalAdapter(
     }
 
     override fun getItemCount(): Int = feedList.size
+
+    fun updateData(newList: List<Feed>) {
+        feedList = newList
+        notifyDataSetChanged()
+    }
 
     class FeedHorizontalViewHolder(
         private val binding: AvatarItemBinding

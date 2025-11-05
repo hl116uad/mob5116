@@ -30,7 +30,8 @@ class FeedAdapter(
     override fun getItemCount(): Int = feedList.size
 
     fun updateData(newList: List<Feed>) {
-        feedList = newList.reversed()
+        // Data sudah di-reverse di MainActivity, jadi tidak perlu reverse lagi di sini
+        feedList = newList
         notifyDataSetChanged()
     }
 
@@ -77,7 +78,7 @@ class FeedAdapter(
 
         private fun showPopupMenu(view: View, feed: Feed) {
             val popup = PopupMenu(view.context, view)
-            popup.menuInflater.inflate(R.menu.edit_delete_menu, popup.menu) // Gunakan menu XML
+            popup.menuInflater.inflate(R.menu.edit_delete_menu, popup.menu)
 
             popup.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
