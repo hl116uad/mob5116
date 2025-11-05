@@ -11,14 +11,15 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRoomDbHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="55dp" />
+        android:layout_height="wrap_content" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRoomDbVertikal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingHorizontal="15dp"/>
+        android:paddingHorizontal="15dp"
+        android:layout_marginTop="15dp"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/mtrlBtnAdd"

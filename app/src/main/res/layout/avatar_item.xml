@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:paddingHorizontal="4dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/civProfile"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:src="@drawable/gambar1"
             android:scaleType="centerCrop"
             app:civ_border_width="0dp"
@@ -26,7 +28,9 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:text="username"
-            android:textSize="12sp" />
+            android:textSize="16sp"
+            android:maxLines="1"
+            android:ellipsize="end" />
     </LinearLayout>
 
 </LinearLayout>
